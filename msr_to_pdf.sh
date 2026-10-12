@@ -4,10 +4,11 @@ set -euo pipefail
 # --- CONFIGURATION ---
 PYTHON_CONVERTER="msr_to_pdf.py"
 REQUIRED_PACKAGES=("matplotlib")
+PY_B64="IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJDb252ZXJ0IFBIWVdFIG1lYXN1cmUgNCAoLm1zcikgcmVjb3JkaW5ncyB0byBQREYgcGxvdHMuIiIiCgpmcm9tIF9fZnV0dXJlX18gaW1wb3J0IGFubm90YXRpb25zCgppbXBvcnQgYXJncGFyc2UKaW1wb3J0IHN0cnVjdAppbXBvcnQgc3lzCmZyb20gZGF0YWNsYXNzZXMgaW1wb3J0IGRhdGFjbGFzcywgZmllbGQKZnJvbSBkYXRldGltZSBpbXBvcnQgZGF0ZXRpbWUsIHRpbWVkZWx0YQpmcm9tIHBhdGhsaWIgaW1wb3J0IFBhdGgKCmltcG9ydCBtYXRwbG90bGliCgptYXRwbG90bGliLnVzZSgiQWdnIikKaW1wb3J0IG1hdHBsb3RsaWIucHlwbG90IGFzIHBsdApmcm9tIG1hdHBsb3RsaWIuYmFja2VuZHMuYmFja2VuZF9wZGYgaW1wb3J0IFBkZlBhZ2VzCgpNQUdJQyA9IGIiXHgxOVx4MDVceDA2XHgwN1x4MDhcdG1lYXN1cmU0NSBGaWxlRm9ybWF0IgpEQVRBX09GRlNFVCA9IDB4MzcwClNBTVBMRV9DT1VOVF9PRkZTRVQgPSAweDQ0CkRBVEVUSU1FX09GRlNFVCA9IDB4MkMKQ0hBTk5FTF9CTE9DS19QUkVGSVggPSBiIlx4MDJceDAwXHg5OFx4MDBceDAwXHgwMCIKCgpAZGF0YWNsYXNzCmNsYXNzIENoYW5uZWw6CiAgICBuYW1lOiBzdHIKICAgIHVuaXQ6IHN0cgogICAgc3ltYm9sOiBzdHIKICAgIHZhbHVlczogbGlzdFtmbG9hdF0KCgpAZGF0YWNsYXNzCmNsYXNzIE1lYXN1cmVtZW50OgogICAgcGF0aDogUGF0aAogICAgdGl0bGU6IHN0cgogICAgaW5zdHJ1bWVudDogc3RyCiAgICByZWNvcmRlZF9hdDogZGF0ZXRpbWUgfCBOb25lCiAgICBuX3NhbXBsZXM6IGludAogICAgY2hhbm5lbHM6IGxpc3RbQ2hhbm5lbF0gPSBmaWVsZChkZWZhdWx0X2ZhY3Rvcnk9bGlzdCkKCiAgICBkZWYgY2hhbm5lbChzZWxmLCBzeW1ib2w6IHN0cikgLT4gQ2hhbm5lbCB8IE5vbmU6CiAgICAgICAgc3ltYm9sID0gc3ltYm9sLmxvd2VyKCkKICAgICAgICBmb3IgY2ggaW4gc2VsZi5jaGFubmVsczoKICAgICAgICAgICAgaWYgY2guc3ltYm9sLmxvd2VyKCkgPT0gc3ltYm9sOgogICAgICAgICAgICAgICAgcmV0dXJuIGNoCiAgICAgICAgcmV0dXJuIE5vbmUKCgpkZWYgX3UxNihkYXRhOiBieXRlcywgb2Zmc2V0OiBpbnQpIC0+IGludDoKICAgIHJldHVybiBzdHJ1Y3QudW5wYWNrX2Zyb20oIjxIIiwgZGF0YSwgb2Zmc2V0KVswXQoKCmRlZiBfdTMyKGRhdGE6IGJ5dGVzLCBvZmZzZXQ6IGludCkgLT4gaW50OgogICAgcmV0dXJuIHN0cnVjdC51bnBhY2tfZnJvbSgiPEkiLCBkYXRhLCBvZmZzZXQpWzBdCgoKZGVmIF9mMzIoZGF0YTogYnl0ZXMsIG9mZnNldDogaW50KSAtPiBmbG9hdDoKICAgIHJldHVybiBzdHJ1Y3QudW5wYWNrX2Zyb20oIjxmIiwgZGF0YSwgb2Zmc2V0KVswXQoKCmRlZiBfZjY0KGRhdGE6IGJ5dGVzLCBvZmZzZXQ6IGludCkgLT4gZmxvYXQ6CiAgICByZXR1cm4gc3RydWN0LnVucGFja19mcm9tKCI8ZCIsIGRhdGEsIG9mZnNldClbMF0KCgpkZWYgX3V0ZjE2X2F0KGRhdGE6IGJ5dGVzLCBvZmZzZXQ6IGludCkgLT4gdHVwbGVbc3RyLCBpbnRdIHwgTm9uZToKICAgIGlmIG9mZnNldCArIDggPiBsZW4oZGF0YSk6CiAgICAgICAgcmV0dXJuIE5vbmUKICAgIGxlbmd0aCA9IF91MzIoZGF0YSwgb2Zmc2V0ICsgMikKICAgIGlmIGxlbmd0aCA8IDIgb3IgbGVuZ3RoID4gNDAwIG9yIGxlbmd0aCAlIDIgb3Igb2Zmc2V0ICsgOCArIGxlbmd0aCA+IGxlbihkYXRhKToKICAgICAgICByZXR1cm4gTm9uZQogICAgcmF3ID0gZGF0YVtvZmZzZXQgKyA4IDogb2Zmc2V0ICsgOCArIGxlbmd0aF0KICAgIHRyeToKICAgICAgICB0ZXh0ID0gcmF3LmRlY29kZSgidXRmLTE2bGUiKQogICAgZXhjZXB0IFVuaWNvZGVEZWNvZGVFcnJvcjoKICAgICAgICByZXR1cm4gTm9uZQogICAgaWYgIlx4MDAiIGluIHRleHQ6CiAgICAgICAgcmV0dXJuIE5vbmUKICAgIGlmIG5vdCBhbnkoY2guaXNhbHBoYSgpIG9yIG9yZChjaCkgPiAxMjcgZm9yIGNoIGluIHRleHQpOgogICAgICAgIHJldHVybiBOb25lCiAgICByZXR1cm4gdGV4dCwgb2Zmc2V0ICsgOCArIGxlbmd0aAoKCmRlZiBfZGVscGhpX2RhdGV0aW1lKHZhbHVlOiBmbG9hdCkgLT4gZGF0ZXRpbWUgfCBOb25lOgogICAgaWYgbm90ICgyMDAwMCA8IHZhbHVlIDwgODAwMDApOgogICAgICAgIHJldHVybiBOb25lCiAgICB0cnk6CiAgICAgICAgcmV0dXJuIGRhdGV0aW1lKDE4OTksIDEyLCAzMCkgKyB0aW1lZGVsdGEoZGF5cz12YWx1ZSkKICAgIGV4Y2VwdCBPdmVyZmxvd0Vycm9yOgogICAgICAgIHJldHVybiBOb25lCgoKZGVmIF9yZWFkX2Zsb2F0cyhkYXRhOiBieXRlcywgb2Zmc2V0OiBpbnQsIGNvdW50OiBpbnQpIC0+IGxpc3RbZmxvYXRdOgogICAgZW5kID0gb2Zmc2V0ICsgY291bnQgKiA0CiAgICBpZiBlbmQgPiBsZW4oZGF0YSk6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcigidHJ1bmNhdGVkIGZsb2F0IGFycmF5IikKICAgIHJldHVybiBsaXN0KHN0cnVjdC51bnBhY2tfZnJvbShmIjx7Y291bnR9ZiIsIGRhdGEsIG9mZnNldCkpCgoKZGVmIHBhcnNlX21zcihwYXRoOiBQYXRoKSAtPiBNZWFzdXJlbWVudDoKICAgIGRhdGEgPSBwYXRoLnJlYWRfYnl0ZXMoKQogICAgaWYgbm90IGRhdGEuc3RhcnRzd2l0aChNQUdJQyk6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcihmIm5vdCBhIFBIWVdFIG1lYXN1cmU0NSBmaWxlOiB7cGF0aH0iKQoKICAgIG5fc2FtcGxlcyA9IF91MzIoZGF0YSwgU0FNUExFX0NPVU5UX09GRlNFVCkKICAgIGlmIG5fc2FtcGxlcyA8IDIgb3Igbl9zYW1wbGVzID4gMV8wMDBfMDAwOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoZiJ1bnJlYXNvbmFibGUgc2FtcGxlIGNvdW50IHtuX3NhbXBsZXN9IGluIHtwYXRofSIpCgogICAgcmVjb3JkZWRfYXQgPSBfZGVscGhpX2RhdGV0aW1lKF9mNjQoZGF0YSwgREFURVRJTUVfT0ZGU0VUKSkKCiAgICBzdHJpbmdzOiBkaWN0W2ludCwgc3RyXSA9IHt9CiAgICBvZmZzZXQgPSAweDgwCiAgICB3aGlsZSBvZmZzZXQgKyA4IDwgREFUQV9PRkZTRVQ6CiAgICAgICAgcGFyc2VkID0gX3V0ZjE2X2F0KGRhdGEsIG9mZnNldCkKICAgICAgICBpZiBwYXJzZWQgaXMgTm9uZToKICAgICAgICAgICAgb2Zmc2V0ICs9IDIKICAgICAgICAgICAgY29udGludWUKICAgICAgICB0YWcgPSBfdTE2KGRhdGEsIG9mZnNldCkKICAgICAgICB0ZXh0LCBuZXh0X29mZnNldCA9IHBhcnNlZAogICAgICAgIHN0cmluZ3NbdGFnXSA9IHRleHQKICAgICAgICBvZmZzZXQgPSBuZXh0X29mZnNldAoKICAgIG5fY2hhbm5lbHMgPSBfdTE2KGRhdGEsIERBVEFfT0ZGU0VUKQogICAgbmJ5dGVzID0gX3UzMihkYXRhLCBEQVRBX09GRlNFVCArIDIpCiAgICBpZiBuYnl0ZXMgIT0gbl9zYW1wbGVzICogNDoKICAgICAgICByYWlzZSBWYWx1ZUVycm9yKAogICAgICAgICAgICBmImNoYW5uZWwgYnl0ZSBzaXplIHtuYnl0ZXN9IGRvZXMgbm90IG1hdGNoIG4qND17bl9zYW1wbGVzICogNH0gaW4ge3BhdGh9IgogICAgICAgICkKICAgIGlmIG5fY2hhbm5lbHMgPCAxOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoZiJubyBjaGFubmVscyBpbiB7cGF0aH0iKQoKICAgIHBsYW5lc19zdGFydCA9IERBVEFfT0ZGU0VUICsgOCAgIyBuY2ggdTE2ICsgbmJ5dGVzIHUzMiArIHBhZCB1MTYKICAgIHBsYW5lcyA9IFtfcmVhZF9mbG9hdHMoZGF0YSwgcGxhbmVzX3N0YXJ0ICsgaSAqIG5fc2FtcGxlcyAqIDQsIG5fc2FtcGxlcykgZm9yIGkgaW4gcmFuZ2Uobl9jaGFubmVscyldCgogICAgIyBDaGFubmVsIDAgaXMgc3RvcmVkIGluIGZ1bGwuIENoYW5uZWxzIDErIGFyZSBwcmVmaXhlZCB3aXRoIHR3byBwYWRkaW5nCiAgICAjIHplcm9zIGFuZCBvdmVyZmxvdyB0d28gc2FtcGxlcyBpbnRvIHRoZSBuZXh0IHBsYW5lIC8gMTYtYnl0ZSBmb290ZXIuCiAgICB2YWx1ZXM6IGxpc3RbbGlzdFtmbG9hdF1dID0gW3BsYW5lc1swXV0KICAgIGlmIG5fY2hhbm5lbHMgPj0gMjoKICAgICAgICBzcGlsbGVkID0gcGxhbmVzWzJdWzoyXSBpZiBuX2NoYW5uZWxzID49IDMgZWxzZSBbXQogICAgICAgIHZhbHVlcy5hcHBlbmQocGxhbmVzWzFdWzI6XSArIHNwaWxsZWQpCiAgICBpZiBuX2NoYW5uZWxzID49IDM6CiAgICAgICAgZm9vdGVyID0gX3JlYWRfZmxvYXRzKGRhdGEsIHBsYW5lc19zdGFydCArIDMgKiBuX3NhbXBsZXMgKiA0LCA0KQogICAgICAgIHZhbHVlcy5hcHBlbmQocGxhbmVzWzJdWzQ6XSArIGZvb3RlcikKCiAgICBtZXRhID0gWwogICAgICAgIChzdHJpbmdzLmdldCgweDA5LCAi0KDQsNGB0YHRgtC+0Y/QvdC40LUiKSwgc3RyaW5ncy5nZXQoMHgwQSwgImNtIiksIHN0cmluZ3MuZ2V0KDB4MEIsICJzIikpLAogICAgICAgIChzdHJpbmdzLmdldCgweDBDLCAi0J/Qu9C+0YLQvdC+0YHRgtGMINC/0L7RgtC+IEIiKSwgc3RyaW5ncy5nZXQoMHgwRCwgIm1UIiksIHN0cmluZ3MuZ2V0KDB4MEUsICJCIikpLAogICAgICAgIChzdHJpbmdzLmdldCgweDBGLCAi0KLQvtC6IiksIHN0cmluZ3MuZ2V0KDB4MTAsICJBIiksIHN0cmluZ3MuZ2V0KDB4MTEsICJJIikpLAogICAgXQoKICAgIGNoYW5uZWxzID0gWwogICAgICAgIENoYW5uZWwobmFtZT1tZXRhW2ldWzBdLCB1bml0PW1ldGFbaV1bMV0sIHN5bWJvbD1tZXRhW2ldWzJdLCB2YWx1ZXM9dmFsdWVzW2ldKQogICAgICAgIGZvciBpIGluIHJhbmdlKG1pbihuX2NoYW5uZWxzLCBsZW4odmFsdWVzKSwgbGVuKG1ldGEpKSkKICAgICAgICBpZiBsZW4odmFsdWVzW2ldKSA9PSBuX3NhbXBsZXMKICAgIF0KICAgIGlmIGxlbihjaGFubmVscykgPCAyOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoZiJjb3VsZCBub3QgcmVjb25zdHJ1Y3QgWC9ZIHNlcmllcyBpbiB7cGF0aH0iKQoKICAgIHJldHVybiBNZWFzdXJlbWVudCgKICAgICAgICBwYXRoPXBhdGgsCiAgICAgICAgdGl0bGU9c3RyaW5ncy5nZXQoMHgwNikgb3IgcGF0aC5zdGVtLAogICAgICAgIGluc3RydW1lbnQ9c3RyaW5ncy5nZXQoMHgwNywgIiIpLAogICAgICAgIHJlY29yZGVkX2F0PXJlY29yZGVkX2F0LAogICAgICAgIG5fc2FtcGxlcz1uX3NhbXBsZXMsCiAgICAgICAgY2hhbm5lbHM9Y2hhbm5lbHMsCiAgICApCgoKZGVmIF9heGlzX2xhYmVsKGNoYW5uZWw6IENoYW5uZWwpIC0+IHN0cjoKICAgIHN5bWJvbCA9IGNoYW5uZWwuc3ltYm9sIG9yIGNoYW5uZWwubmFtZQogICAgdW5pdCA9IGNoYW5uZWwudW5pdAogICAgaWYgdW5pdDoKICAgICAgICByZXR1cm4gZiJ7c3ltYm9sfSAvIHt1bml0fSIKICAgIHJldHVybiBzeW1ib2wKCgpkZWYgcGxvdF9tZWFzdXJlbWVudChtZWFzdXJlbWVudDogTWVhc3VyZW1lbnQsIGF4OiBwbHQuQXhlcykgLT4gTm9uZToKICAgIHhfY2ggPSBtZWFzdXJlbWVudC5jaGFubmVsKCJzIikgb3IgbWVhc3VyZW1lbnQuY2hhbm5lbHNbMF0KICAgIHlfY2ggPSBtZWFzdXJlbWVudC5jaGFubmVsKCJCIikgb3IgbWVhc3VyZW1lbnQuY2hhbm5lbHNbMV0KICAgIHggPSB4X2NoLnZhbHVlcwogICAgeSA9IHlfY2gudmFsdWVzCgogICAgYXgucGxvdCh4LCB5LCBjb2xvcj0iI2UxMDYwMCIsIGxpbmV3aWR0aD0xLjQsIGxhYmVsPXlfY2gubmFtZSkKICAgIGF4LnNldF94bGFiZWwoX2F4aXNfbGFiZWwoeF9jaCksIGxvYz0icmlnaHQiLCBmb250c2l6ZT0xMikKICAgIGF4LnNldF95bGFiZWwoX2F4aXNfbGFiZWwoeV9jaCksIGZvbnRzaXplPTEyKQogICAgYXguZ3JpZChUcnVlLCB3aGljaD0ibWFqb3IiLCBjb2xvcj0iI2M4YzhjOCIsIGxpbmV3aWR0aD0wLjYpCiAgICBheC5zZXRfYXhpc2JlbG93KFRydWUpCiAgICBheC5zcGluZXNbInRvcCJdLnNldF92aXNpYmxlKEZhbHNlKQogICAgYXguc3BpbmVzWyJyaWdodCJdLnNldF92aXNpYmxlKEZhbHNlKQogICAgYXgudGlja19wYXJhbXMoZGlyZWN0aW9uPSJvdXQiLCBsYWJlbHNpemU9OSkKICAgIGF4LnNldF90aXRsZShtZWFzdXJlbWVudC5wYXRoLnN0ZW0sIGZvbnRzaXplPTE0LCBwYWQ9MTApCgogICAgaW5mbyA9IFtdCiAgICBpZiBtZWFzdXJlbWVudC5pbnN0cnVtZW50OgogICAgICAgIGluZm8uYXBwZW5kKG1lYXN1cmVtZW50Lmluc3RydW1lbnQpCiAgICBpZiBtZWFzdXJlbWVudC5yZWNvcmRlZF9hdDoKICAgICAgICBpbmZvLmFwcGVuZChtZWFzdXJlbWVudC5yZWNvcmRlZF9hdC5zdHJmdGltZSgiJVktJW0tJWQgJUg6JU06JVMiKSkKICAgIGlfY2ggPSBtZWFzdXJlbWVudC5jaGFubmVsKCJJIikKICAgIGlmIGlfY2ggYW5kIGlfY2gudmFsdWVzOgogICAgICAgIGN1cnJlbnQgPSBzdW0oaV9jaC52YWx1ZXMpIC8gbGVuKGlfY2gudmFsdWVzKQogICAgICAgIGluZm8uYXBwZW5kKGYie2lfY2guc3ltYm9sfSDiiYgge2N1cnJlbnQ6LjNmfSB7aV9jaC51bml0fSIpCiAgICBpZiBpbmZvOgogICAgICAgIGF4LnRleHQoCiAgICAgICAgICAgIDAuOTksCiAgICAgICAgICAgIDAuMDIsCiAgICAgICAgICAgICIgIMK3ICAiLmpvaW4oaW5mbyksCiAgICAgICAgICAgIHRyYW5zZm9ybT1heC50cmFuc0F4ZXMsCiAgICAgICAgICAgIGhhPSJyaWdodCIsCiAgICAgICAgICAgIHZhPSJib3R0b20iLAogICAgICAgICAgICBmb250c2l6ZT04LAogICAgICAgICAgICBjb2xvcj0iIzU1NTU1NSIsCiAgICAgICAgKQoKICAgIGF4LmxlZ2VuZChsb2M9InVwcGVyIHJpZ2h0IiwgZnJhbWVvbj1UcnVlLCBmYW5jeWJveD1GYWxzZSwgZnJhbWVhbHBoYT0wLjk1LCBmb250c2l6ZT05KQoKCmRlZiByZW5kZXJfcGRmKG1lYXN1cmVtZW50OiBNZWFzdXJlbWVudCwgb3V0cHV0OiBQYXRoKSAtPiBOb25lOgogICAgb3V0cHV0LnBhcmVudC5ta2RpcihwYXJlbnRzPVRydWUsIGV4aXN0X29rPVRydWUpCiAgICBmaWcsIGF4ID0gcGx0LnN1YnBsb3RzKGZpZ3NpemU9KDExLjY5LCA4LjI3KSkgICMgQTQgbGFuZHNjYXBlCiAgICBwbG90X21lYXN1cmVtZW50KG1lYXN1cmVtZW50LCBheCkKICAgIGZpZy50aWdodF9sYXlvdXQoKQogICAgZmlnLnNhdmVmaWcob3V0cHV0LCBmb3JtYXQ9InBkZiIpCiAgICBwbHQuY2xvc2UoZmlnKQoKCmRlZiBmaW5kX21zcl9maWxlcyhyb290OiBQYXRoKSAtPiBsaXN0W1BhdGhdOgogICAgaWYgcm9vdC5pc19maWxlKCkgYW5kIHJvb3Quc3VmZml4Lmxvd2VyKCkgPT0gIi5tc3IiOgogICAgICAgIHJldHVybiBbcm9vdF0KICAgIHJldHVybiBzb3J0ZWQocm9vdC5yZ2xvYigiKi5tc3IiKSkKCgpkZWYgY29udmVydChwYXRoczogbGlzdFtQYXRoXSwgb3V0cHV0X2RpcjogUGF0aCB8IE5vbmUsIGNvbWJpbmVkOiBQYXRoIHwgTm9uZSkgLT4gbGlzdFtQYXRoXToKICAgIG1lYXN1cmVtZW50czogbGlzdFtNZWFzdXJlbWVudF0gPSBbXQogICAgd3JpdHRlbjogbGlzdFtQYXRoXSA9IFtdCiAgICBmb3IgcGF0aCBpbiBwYXRoczoKICAgICAgICBtZWFzdXJlbWVudCA9IHBhcnNlX21zcihwYXRoKQogICAgICAgIG1lYXN1cmVtZW50cy5hcHBlbmQobWVhc3VyZW1lbnQpCiAgICAgICAgZGVzdF9kaXIgPSBvdXRwdXRfZGlyIGlmIG91dHB1dF9kaXIgaXMgbm90IE5vbmUgZWxzZSBwYXRoLnBhcmVudAogICAgICAgIGRlc3QgPSBkZXN0X2RpciAvIGYie3BhdGguc3RlbX0ucGRmIgogICAgICAgIHJlbmRlcl9wZGYobWVhc3VyZW1lbnQsIGRlc3QpCiAgICAgICAgd3JpdHRlbi5hcHBlbmQoZGVzdCkKICAgICAgICBwcmludChmIk9LICB7cGF0aH0gLT4ge2Rlc3R9IikKCiAgICBpZiBjb21iaW5lZCBhbmQgbWVhc3VyZW1lbnRzOgogICAgICAgIGNvbWJpbmVkLnBhcmVudC5ta2RpcihwYXJlbnRzPVRydWUsIGV4aXN0X29rPVRydWUpCiAgICAgICAgd2l0aCBQZGZQYWdlcyhjb21iaW5lZCkgYXMgcGRmOgogICAgICAgICAgICBmb3IgbWVhc3VyZW1lbnQgaW4gbWVhc3VyZW1lbnRzOgogICAgICAgICAgICAgICAgZmlnLCBheCA9IHBsdC5zdWJwbG90cyhmaWdzaXplPSgxMS42OSwgOC4yNykpCiAgICAgICAgICAgICAgICBwbG90X21lYXN1cmVtZW50KG1lYXN1cmVtZW50LCBheCkKICAgICAgICAgICAgICAgIGZpZy50aWdodF9sYXlvdXQoKQogICAgICAgICAgICAgICAgcGRmLnNhdmVmaWcoZmlnKQogICAgICAgICAgICAgICAgcGx0LmNsb3NlKGZpZykKICAgICAgICBwcmludChmIk9LICBjb21iaW5lZCAtPiB7Y29tYmluZWR9IikKICAgICAgICB3cml0dGVuLmFwcGVuZChjb21iaW5lZCkKICAgIHJldHVybiB3cml0dGVuCgoKZGVmIG1haW4oYXJndjogbGlzdFtzdHJdIHwgTm9uZSA9IE5vbmUpIC0+IGludDoKICAgIHBhcnNlciA9IGFyZ3BhcnNlLkFyZ3VtZW50UGFyc2VyKAogICAgICAgIGRlc2NyaXB0aW9uPSLQn9GA0LXQvtCx0YDQsNC30YPQtdGCINCz0YDQsNGE0LjQutC4IFBIWVdFIG1lYXN1cmUgKC5tc3IpINCyIFBERi4iCiAgICApCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KAogICAgICAgICJpbnB1dCIsCiAgICAgICAgbmFyZ3M9Ij8iLAogICAgICAgIGRlZmF1bHQ9Ii4iLAogICAgICAgIGhlbHA9ItCf0LDQv9C60LAg0LjQu9C4INGE0LDQudC7IC5tc3IgKNC/0L4g0YPQvNC+0LvRh9Cw0L3QuNGOIOKAlCDRgtC10LrRg9GJ0LDRjyDQv9Cw0L/QutCwKSIsCiAgICApCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KAogICAgICAgICItbyIsCiAgICAgICAgIi0tb3V0cHV0LWRpciIsCiAgICAgICAgaGVscD0i0JrRg9C00LAg0YHQvtGF0YDQsNC90LjRgtGMIFBERiAo0L/QviDRg9C80L7Qu9GH0LDQvdC40Y4g4oCUINGA0Y/QtNC+0Lwg0YEg0LrQsNC20LTRi9C8IC5tc3IpIiwKICAgICkKICAgIHBhcnNlci5hZGRfYXJndW1lbnQoCiAgICAgICAgIi0tY29tYmluZWQiLAogICAgICAgIG5hcmdzPSI/IiwKICAgICAgICBjb25zdD0iYWxsX2dyYXBocy5wZGYiLAogICAgICAgIGhlbHA9ItCU0L7Qv9C+0LvQvdC40YLQtdC70YzQvdC+INGB0L7QsdGA0LDRgtGMINCy0YHQtSDQs9GA0LDRhNC40LrQuCDQsiDQvtC00LjQvSBQREYiLAogICAgKQogICAgYXJncyA9IHBhcnNlci5wYXJzZV9hcmdzKGFyZ3YpCgogICAgcm9vdCA9IFBhdGgoYXJncy5pbnB1dCkuZXhwYW5kdXNlcigpLnJlc29sdmUoKQogICAgaWYgbm90IHJvb3QuZXhpc3RzKCk6CiAgICAgICAgcHJpbnQoZiLQvdC1INC90LDQudC00LXQvSDQv9GD0YLRjDoge3Jvb3R9IiwgZmlsZT1zeXMuc3RkZXJyKQogICAgICAgIHJldHVybiAxCgogICAgZmlsZXMgPSBmaW5kX21zcl9maWxlcyhyb290KQogICAgaWYgbm90IGZpbGVzOgogICAgICAgIHByaW50KGYi0LIge3Jvb3R9INC90LXRgiDRhNCw0LnQu9C+0LIgLm1zciIsIGZpbGU9c3lzLnN0ZGVycikKICAgICAgICByZXR1cm4gMQoKICAgIG91dHB1dF9kaXIgPSBQYXRoKGFyZ3Mub3V0cHV0X2RpcikuZXhwYW5kdXNlcigpLnJlc29sdmUoKSBpZiBhcmdzLm91dHB1dF9kaXIgZWxzZSBOb25lCiAgICBjb21iaW5lZCA9IE5vbmUKICAgIGlmIGFyZ3MuY29tYmluZWQ6CiAgICAgICAgY29tYmluZWRfcGF0aCA9IFBhdGgoYXJncy5jb21iaW5lZCkKICAgICAgICBpZiBvdXRwdXRfZGlyIGlzIG5vdCBOb25lOgogICAgICAgICAgICBjb21iaW5lZCA9IG91dHB1dF9kaXIgLyBjb21iaW5lZF9wYXRoLm5hbWUKICAgICAgICBlbGlmIGNvbWJpbmVkX3BhdGguaXNfYWJzb2x1dGUoKSBvciBjb21iaW5lZF9wYXRoLnBhcmVudCAhPSBQYXRoKCIuIik6CiAgICAgICAgICAgIGNvbWJpbmVkID0gY29tYmluZWRfcGF0aC5yZXNvbHZlKCkKICAgICAgICBlbHNlOgogICAgICAgICAgICBjb21iaW5lZCA9IChyb290IGlmIHJvb3QuaXNfZGlyKCkgZWxzZSByb290LnBhcmVudCkgLyBjb21iaW5lZF9wYXRoLm5hbWUKCiAgICB0cnk6CiAgICAgICAgY29udmVydChmaWxlcywgb3V0cHV0X2RpciwgY29tYmluZWQpCiAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGV4YzoKICAgICAgICBwcmludChmItC+0YjQuNCx0LrQsDoge2V4Y30iLCBmaWxlPXN5cy5zdGRlcnIpCiAgICAgICAgcmV0dXJuIDEKICAgIHJldHVybiAwCgoKaWYgX19uYW1lX18gPT0gIl9fbWFpbl9fIjoKICAgIHJhaXNlIFN5c3RlbUV4aXQobWFpbigpKQo="
 
 # --- HELPER FUNCTIONS ---
 usage() {
-  cat <<'EOF'
+  cat <<'EOF_USAGE'
 Использование:
   ./msr_to_pdf.sh файл.msr
   ./msr_to_pdf.sh файл1.msr файл2.msr ...
@@ -15,7 +16,7 @@ usage() {
 
 Скрипт автоматически установит зависимости, если они отсутствуют,
 создаст папку для выгрузки и сохранит туда PDF.
-EOF
+EOF_USAGE
 }
 
 # 1. Check for Python 3
@@ -24,271 +25,11 @@ if ! command -v python3 >/dev/null 2>&1; then
   exit 1
 fi
 
-# 2. Ensure Python converter exists (embedded)
+# 2. Ensure Python converter exists (decode from base64)
 if [[ ! -f "$PYTHON_CONVERTER" ]]; then
   echo "Подготовка конвертера..."
-  cat <<'EOF_PY' > "$PYTHON_CONVERTER"
-#!/usr/bin/env python3
-"""Convert PHYWE measure 4 (.msr) recordings to PDF plots."""
-
-from __future__ import annotations
-
-import argparse
-import struct
-import sys
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from pathlib import Path
-
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-
-MAGIC = b"\x19\x05\x06\x07\x08\tmeasure45 FileFormat"
-DATA_OFFSET = 0x370
-SAMPLE_COUNT_OFFSET = 0x44
-DATETIME_OFFSET = 0x2C
-CHANNEL_BLOCK_PREFIX = b"\x02\x00\x98\x00\x00\x00"
-
-@dataclass
-class Channel:
-    name: str
-    unit: str
-    symbol: str
-    values: list[float]
-
-@dataclass
-class Measurement:
-    path: Path
-    title: str
-    instrument: str
-    recorded_at: datetime | None
-    n_samples: int
-    channels: list[Channel] = field(default_factory=list)
-
-    def channel(self, symbol: str) -> Channel | None:
-        symbol = symbol.lower()
-        for ch in self.channels:
-            if ch.symbol.lower() == symbol:
-                return ch
-        return None
-
-def _u16(data: bytes, offset: int) -> int:
-    return struct.unpack_from("<H", data, offset)[0]
-
-def _u32(data: bytes, offset: int) -> int:
-    return struct.unpack_from("<I", data, offset)[0]
-
-def _f32(data: bytes, offset: int) -> float:
-    return struct.unpack_from("<f", data, offset)[0]
-
-def _f64(data: bytes, offset: int) -> float:
-    return struct.unpack_from("<d", data, offset)[0]
-
-def _utf16_at(data: bytes, offset: int) -> tuple[str, int] | None:
-    if offset + 8 > len(data):
-        return None
-    length = _u32(data, offset + 2)
-    if length < 2 or length > 400 or length % 2 or offset + 8 + length > len(data):
-        return None
-    raw = data[offset + 8 : offset + 8 + length]
-    try:
-        text = raw.decode("utf-16le")
-    except UnicodeDecodeError:
-        return None
-    if "\x00" in text:
-        return None
-    if not any(ch.isalpha() or ord(ch) > 127 for ch in text):
-        return None
-    return text, offset + 8 + length
-
-def _delphi_datetime(value: float) -> datetime | None:
-    if not (20000 < value < 80000):
-        return None
-    try:
-        return datetime(1899, 12, 30) + timedelta(days=value)
-    except OverflowError:
-        return None
-
-def _read_floats(data: bytes, offset: int, count: int) -> list[float]:
-    end = offset + count * 4
-    if end > len(data):
-        raise ValueError("truncated float array")
-    return list(struct.unpack_from(f"<{count}f", data, offset))
-
-def parse_msr(path: Path) -> Measurement:
-    data = path.read_bytes()
-    if not data.startswith(MAGIC):
-        raise ValueError(f"not a PHYWE measure45 file: {path}")
-
-    n_samples = _u32(data, SAMPLE_COUNT_OFFSET)
-    if n_samples < 2 or n_samples > 1_000_000:
-        raise ValueError(f"unreasonable sample count {n_samples} in {path}")
-
-    recorded_at = _delphi_datetime(_f64(data, DATETIME_OFFSET))
-
-    strings: dict[int, str] = {}
-    offset = 0x80
-    while offset + 8 < DATA_OFFSET:
-        parsed = _utf16_at(data, offset)
-        if parsed is None:
-            offset += 2
-            continue
-        tag = _u16(data, offset)
-        text, next_offset = parsed
-        strings[tag] = text
-        offset = next_offset
-
-    n_channels = _u16(data, DATA_OFFSET)
-    nbytes = _u32(data, DATA_OFFSET + 2)
-    if nbytes != n_samples * 4:
-        raise ValueError(f"channel byte size {nbytes} does not match n*4={n_samples * 4} in {path}")
-    if n_channels < 1:
-        raise ValueError(f"no channels in {path}")
-
-    planes_start = DATA_OFFSET + 8
-    planes = [_read_floats(data, planes_start + i * n_samples * 4, n_samples) for i in range(n_channels)]
-
-    values: list[list[float]] = [planes[0]]
-    if n_channels >= 2:
-        spilled = planes[2][:2] if n_channels >= 3 else []
-        values.append(planes[1][2:] + spilled)
-    if n_channels >= 3:
-        footer = _read_floats(data, planes_start + 3 * n_samples * 4, 4)
-        values.append(planes[2][4:] + footer)
-
-    meta = [
-        (strings.get(0x09, "Расстояние"), strings.get(0x0A, "cm"), strings.get(0x0B, "s")),
-        (strings.get(0x0C, "Плотность пото B"), strings.get(0x0D, "mT"), strings.get(0x0E, "B")),
-        (strings.get(0x0F, "Ток"), strings.get(0x10, "A"), strings.get(0x11, "I")),
-    ]
-
-    channels = [
-        Channel(name=meta[i][0], unit=meta[i][1], symbol=meta[i][2], values=values[i])
-        for i in range(min(n_channels, len(values), len(meta)))
-        if len(values[i]) == n_samples
-    ]
-    if len(channels) < 2:
-        raise ValueError(f"could not reconstruct X/Y series in {path}")
-
-    return Measurement(
-        path=path,
-        title=strings.get(0x06) or path.stem,
-        instrument=strings.get(0x07, ""),
-        recorded_at=recorded_at,
-        n_samples=n_samples,
-        channels=channels,
-    )
-
-def _axis_label(channel: Channel) -> str:
-    symbol = channel.symbol or channel.name
-    unit = channel.unit
-    if unit:
-        return f"{symbol} / {unit}"
-    return symbol
-
-def plot_measurement(measurement: Measurement, ax: plt.Axes) -> None:
-    x_ch = measurement.channel("s") or measurement.channels[0]
-    y_ch = measurement.channel("B") or measurement.channels[1]
-    x = x_ch.values
-    y = y_ch.values
-
-    ax.plot(x, y, color="#e10600", linewidth=1.4, label=y_ch.name)
-    ax.set_xlabel(_axis_label(x_ch), loc="right", fontsize=12)
-    ax.set_ylabel(_axis_label(y_ch), fontsize=12)
-    ax.grid(True, which="major", color="#c8c8c8", linewidth=0.6)
-    ax.set_axisbelow(True)
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.tick_params(direction="out", labelsize=9)
-    ax.set_title(measurement.path.stem, fontsize=14, pad=10)
-
-    info = []
-    if measurement.instrument:
-        info.append(measurement.instrument)
-    if measurement.recorded_at:
-        info.append(measurement.recorded_at.strftime("%Y-%m-%d %H:%M:%S"))
-    i_ch = measurement.channel("I")
-    if i_ch and i_ch.values:
-        current = sum(i_ch.values) / len(i_ch.values)
-        info.append(f"{i_ch.symbol} ≈ {current:.3f} {i_ch.unit}")
-    if info:
-        ax.text(0.99, 0.02, "  ·  ".join(info), transform=ax.transAxes, ha="right", va="bottom", fontsize=8, color="#555555")
-    ax.legend(loc="upper right", frameon=True, fancybox=False, framealpha=0.95, fontsize=9)
-
-def render_pdf(measurement: Measurement, output: Path) -> None:
-    output.parent.mkdir(parents=True, exist_ok=True)
-    fig, ax = plt.subplots(figsize=(11.69, 8.27))
-    plot_measurement(measurement, ax)
-    fig.tight_layout()
-    fig.savefig(output, format="pdf")
-    plt.close(fig)
-
-def find_msr_files(root: Path) -> list[Path]:
-    if root.is_file() and root.suffix.lower() == ".msr":
-        return [root]
-    return sorted(root.rglob("*.msr"))
-
-def convert(paths: list[Path], output_dir: Path | None, combined: Path | None) -> list[Path]:
-    measurements: list[Measurement] = []
-    written: list[Path] = []
-    for path in paths:
-        measurement = parse_msr(path)
-        measurements.append(measurement)
-        dest_dir = output_dir if output_dir is not None else path.parent
-        dest = dest_dir / f"{path.stem}.pdf"
-        render_pdf(measurement, dest)
-        written.append(dest)
-        print(f"OK  {path} -> {dest}")
-    if combined and measurements:
-        combined.parent.mkdir(parents=True, exist_ok=True)
-        with PdfPages(combined) as pdf:
-            for measurement in measurements:
-                fig, ax = plt.subplots(figsize=(11.69, 8.27))
-                plot_measurement(measurement, ax)
-                fig.tight_layout()
-                pdf.savefig(fig)
-                plt.close(fig)
-        print(f"OK  combined -> {combined}")
-        written.append(combined)
-    return written
-
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Преобразует графики PHYWE measure (.msr) в PDF.")
-    parser.add_argument("input", nargs="?", default=".", help="Папка или файл .msr")
-    parser.add_argument("-o", "--output-dir", help="Куда сохранить PDF")
-    parser.add_argument("--combined", nargs="?", const="all_graphs.pdf", help="Собрать все графики в один PDF")
-    args = parser.parse_args(argv)
-    root = Path(args.input).expanduser().resolve()
-    if not root.exists():
-        print(f"не найден путь: {root}", file=sys.stderr)
-        return 1
-    files = find_msr_files(root)
-    if not files:
-        print(f"в {root} нет файлов .msr", file=sys.stderr)
-        return 1
-    output_dir = Path(args.output_dir).expanduser().resolve() if args.output_dir else None
-    combined = None
-    if args.combined:
-        combined_path = Path(args.combined)
-        if output_dir is not None:
-            combined = output_dir / combined_path.name
-        elif combined_path.is_absolute() or combined_path.parent != Path("."):
-            combined = combined_path.resolve()
-        else:
-            combined = (root if root.is_dir() else root.parent) / combined_path.name
-    try:
-        convert(files, output_dir, combined)
-    except Exception as exc:
-        print(f"ошибка: {exc}", file=sys.stderr)
-        return 1
-    return 0
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-EOF_PY
-done
+  echo "$PY_B64" | base64 -d > "$PYTHON_CONVERTER"
+fi
 
 # 3. Install dependencies
 echo "Проверка зависимостей..."
@@ -344,7 +85,7 @@ if [[ -z "$folder_name" ]]; then
   echo "Имя папки не может быть пустым." >&2
   exit 1
 fi
-if [[ "$folder_name" == *"/"* || "$folder_name" == *"\\"* || "$folder_name" == "." || "$folder_name" == ".." ]]; then
+if [[ "$folder_name" == *"/"* || "$folder_name" == *"\"* || "$folder_name" == "." || "$folder_name" == ".." ]]; then
   echo "Укажите только имя папки, без пути." >&2
   exit 1
 fi
