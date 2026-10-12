@@ -353,7 +353,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 output_dir="${SCRIPT_DIR}/${folder_name}"
 mkdir -p "$output_dir"
 
-# Temporary Matplotlib config to avoid prompts/errors in some environments
 export MPLCONFIGDIR="$(mktemp -d "${TMPDIR:-/tmp}/msr-to-pdf.XXXXXX")"
 trap 'rm -rf "$MPLCONFIGDIR"' EXIT
 
