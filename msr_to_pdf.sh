@@ -85,7 +85,7 @@ if [[ -z "$folder_name" ]]; then
   echo "Имя папки не может быть пустым." >&2
   exit 1
 fi
-if [[ "$folder_name" == *"/"* || "$folder_name" == *"\"* || "$folder_name" == "." || "$folder_name" == ".." ]]; then
+if [[ "$folder_name" == *"/"* || "$folder_name" == *"\\"* || "$folder_name" == "." || "$folder_name" == ".." ]]; then
   echo "Укажите только имя папки, без пути." >&2
   exit 1
 fi
